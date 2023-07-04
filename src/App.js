@@ -6,6 +6,19 @@ import axios from "axios";
 function App() {
   const [listaPaises, SetListaPaises] = useState([]);
   const [paisRandom, SetPaisRandom] = useState(null);
+  const [puntos, SetPuntos] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [nombre, SetNombre] = useState("")
+
+  useEffect(() => {
+    if (!timeLeft) return;
+
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
 
   useEffect(() => {
     cargarBanderas();
@@ -23,8 +36,13 @@ function App() {
     let numRandom = Math.floor(Math.random() * listaPaises.length);
     SetPaisRandom(listaPaises[numRandom]);
 
+    setTimeLeft(15)
+
     document.getElementById("botonBandera").style.display = "none";
+    document.getElementById("ingresoNombre").style.display = "none";
     document.getElementById("form").style.display = "block";
+    document.getElementById("muestraPuntos").style.display = "block";
+    document.getElementById("timer").style.display = "block";
   };
 
   const chequearRespuesta = (e) => {
@@ -33,44 +51,56 @@ function App() {
     let respuesta = e.target.respuesta.value;
 
     if (respuesta === paisRandom.name) {
-      console.log("correcto");
       cargarBanderaRandom();
+      SetPuntos(puntos + timeLeft);
+
+      document.getElementById("resultado").textContent = `¡Correcto, ganaste ${timeLeft} puntos por terminar antes de tiempo!`;
+
     } else {
-      console.log("incorrecto");
+      cargarBanderaRandom();
+      SetPuntos(puntos - 1);
+
+      document.getElementById("resultado").textContent = `¡Incorrecto, perdiste un punto!`;
     }
 
     e.target.respuesta.value = "";
   };
 
+  const handleChange = (e) => {
+    SetNombre(e.target.value)
+  }
+
   return (
-    <div>
+    <div className="container">
       <center>
         <h1>ADIVINA LA BANDERA</h1>
 
+        <h2 id="muestraPuntos" style={{ display: "none" }}>PUNTOS DE {nombre}: {puntos}</h2>
+        <h2 id="timer" style={{ display: "none" }}>Tiempo restante: {timeLeft}</h2>
+
         {paisRandom && (
           <div>
-            <p>{paisRandom.name}</p>
-            <img
-              src={paisRandom.flag}
-              style={{ height: "200px", width: "auto"}}
-              alt="bandera"
-            />
+            <img src={paisRandom.flag} style={{ height: "200px", width: "auto" }} alt="bandera" />
           </div>
         )}
 
-        <button onClick={cargarBanderaRandom} id="botonBandera">COMENZAR EL JUEGO</button>
+        <button onClick={cargarBanderaRandom} id="botonBandera">
+          COMENZAR EL JUEGO
+        </button>
+
+        <div id="ingresoNombre">
+          <h4>Ingresa tu nombre</h4>
+          <input type="text" onChange={handleChange}></input>
+        </div>
 
         <div id="form" style={{ display: "none" }}>
-
           <form onSubmit={(e) => chequearRespuesta(e)}>
             <input type="text" name="respuesta"></input>
             <button type="submit">Chequear respuesta</button>
           </form>
-
         </div>
 
-        <div id="resultado"></div>
-
+        <h2 id="resultado"></h2>
       </center>
     </div>
   );

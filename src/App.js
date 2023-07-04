@@ -1,39 +1,77 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios"
+import { useState, useEffect } from "react";
+import React from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
-  const [banderas, setBanderas] = useState([]);
-  const [randomBandera, setRandomBandera] = useState([])
+  const [listaPaises, SetListaPaises] = useState([]);
+  const [paisRandom, SetPaisRandom] = useState(null);
+
+  useEffect(() => {
+    cargarBanderas();
+  }, []);
 
   const cargarBanderas = async () => {
     axios
-    .get("https://countriesnow.space/api/v0.1/countries/flag/images")
-    .then((result) =>{
-      setBanderas(result.data.data)     
-    }) 
-  }
+      .get("https://countriesnow.space/api/v0.1/countries/flag/images")
+      .then((result) => {
+        SetListaPaises(result.data.data);
+      });
+  };
 
-  useEffect(() => {
-    cargarBanderas()
-  },[])
+  const cargarBanderaRandom = () => {
+    let numRandom = Math.floor(Math.random() * listaPaises.length);
+    SetPaisRandom(listaPaises[numRandom]);
 
-  const banderaRandom = () => {
-    let numRandom = Math.floor(Math.random() * banderas.length)
-    setRandomBandera(banderas[numRandom])
-  }
+    document.getElementById("botonBandera").style.display = "none";
+    document.getElementById("form").style.display = "block";
+  };
+
+  const chequearRespuesta = (e) => {
+    e.preventDefault();
+
+    let respuesta = e.target.respuesta.value;
+
+    if (respuesta === paisRandom.name) {
+      console.log("correcto");
+      cargarBanderaRandom();
+    } else {
+      console.log("incorrecto");
+    }
+
+    e.target.respuesta.value = "";
+  };
 
   return (
     <div>
-      <center><h1>ADIVINA LA BANDERA</h1></center>
+      <center>
+        <h1>ADIVINA LA BANDERA</h1>
 
-      {randomBandera && (
-        <div>
-          <p>{randomBandera.name}</p>
-          <img src={randomBandera.flag} style={{height:"200px", width:"auto"}}/>
+        {paisRandom && (
+          <div>
+            <p>{paisRandom.name}</p>
+            <img
+              src={paisRandom.flag}
+              style={{ height: "200px", width: "auto"}}
+              alt="bandera"
+            />
+          </div>
+        )}
+
+        <button onClick={cargarBanderaRandom} id="botonBandera">COMENZAR EL JUEGO</button>
+
+        <div id="form" style={{ display: "none" }}>
+
+          <form onSubmit={(e) => chequearRespuesta(e)}>
+            <input type="text" name="respuesta"></input>
+            <button type="submit">Chequear respuesta</button>
+          </form>
+
         </div>
-      )}  
 
-      <button onClick={banderaRandom}>Bandera Aleatoria</button>
+        <div id="resultado"></div>
+
+      </center>
     </div>
   );
 }

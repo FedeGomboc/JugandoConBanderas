@@ -8,7 +8,7 @@ function App() {
   const [paisRandom, SetPaisRandom] = useState(null);
   const [puntos, SetPuntos] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
-  const [nombre, SetNombre] = useState("")
+  const [nombre, SetNombre] = useState("");
 
   useEffect(() => {
     if (!timeLeft) return;
@@ -36,7 +36,7 @@ function App() {
     let numRandom = Math.floor(Math.random() * listaPaises.length);
     SetPaisRandom(listaPaises[numRandom]);
 
-    setTimeLeft(15)
+    setTimeLeft(15);
 
     document.getElementById("botonBandera").style.display = "none";
     document.getElementById("ingresoNombre").style.display = "none";
@@ -54,43 +54,50 @@ function App() {
       cargarBanderaRandom();
       SetPuntos(puntos + timeLeft);
 
-      document.getElementById("resultado").textContent = `¡Correcto, ganaste ${timeLeft} puntos por terminar antes de tiempo!`;
-
+      document.getElementById(
+        "resultado"
+      ).textContent = `¡Correcto, ganaste ${timeLeft} puntos por terminar antes de tiempo!`;
     } else {
       cargarBanderaRandom();
       SetPuntos(puntos - 1);
 
-      document.getElementById("resultado").textContent = `¡Incorrecto, perdiste un punto!`;
+      document.getElementById(
+        "resultado"
+      ).textContent = `¡Incorrecto, perdiste un punto!`;
     }
 
     e.target.respuesta.value = "";
   };
 
   const handleChange = (e) => {
-    SetNombre(e.target.value)
-  }
+    SetNombre(e.target.value);
+  };
 
   return (
     <div className="container">
       <center>
         <h1>ADIVINA LA BANDERA</h1>
 
-        <h2 id="muestraPuntos" style={{ display: "none" }}>PUNTOS DE {nombre}: {puntos}</h2>
-        <h2 id="timer" style={{ display: "none" }}>Tiempo restante: {timeLeft}</h2>
+        <h2 id="muestraPuntos" style={{ display: "none" }}>
+          PUNTOS DE {nombre}: {puntos}
+        </h2>
+        <h2 id="timer" style={{ display: "none" }}>
+          Tiempo restante: {timeLeft}
+        </h2>
 
         {paisRandom && (
           <div>
-            <img src={paisRandom.flag} style={{ height: "200px", width: "auto" }} alt="bandera" />
+            <img
+              src={paisRandom.flag}
+              style={{ height: "200px", width: "auto" }}
+              alt="bandera"
+            />
           </div>
         )}
 
-        <button onClick={cargarBanderaRandom} id="botonBandera">
-          COMENZAR EL JUEGO
-        </button>
-
         <div id="ingresoNombre">
-          <h4>Ingresa tu nombre</h4>
-          <input type="text" onChange={handleChange}></input>
+          <input type="text" onChange={handleChange} placeholder="Ingresar nombre"/>
+          <button onClick={cargarBanderaRandom} id="botonBandera">COMENZAR EL JUEGO</button>
         </div>
 
         <div id="form" style={{ display: "none" }}>

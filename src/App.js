@@ -9,9 +9,15 @@ function App() {
   const [puntos, SetPuntos] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15);
   const [nombre, SetNombre] = useState("");
+  const [mostrarAyuda, SetMostrarAyuda] = useState(false);
 
   useEffect(() => {
-    if (!timeLeft) return;
+    if (!timeLeft) {
+      cargarBanderaRandom();
+      SetPuntos(puntos - 1);
+      SetMostrarAyuda(false)
+      return;
+    }
 
     const intervalId = setInterval(() => {
       setTimeLeft(timeLeft - 1);
@@ -34,6 +40,7 @@ function App() {
 
   const cargarBanderaRandom = () => {
     let numRandom = Math.floor(Math.random() * listaPaises.length);
+
     SetPaisRandom(listaPaises[numRandom]);
 
     setTimeLeft(15);
@@ -49,16 +56,18 @@ function App() {
   const chequearRespuesta = (e) => {
     e.preventDefault();
 
-    let respuesta = e.target.respuesta.value;   
+    let respuesta = e.target.respuesta.value;
 
     if (respuesta.toLowerCase() === paisRandom.name.toLowerCase()) {
       cargarBanderaRandom();
       SetPuntos(puntos + timeLeft);
+      SetMostrarAyuda(false)
 
       document.getElementById("resultado").textContent = `¡Correcto, ganaste ${timeLeft} puntos por terminar antes de tiempo!`;
     } else {
       cargarBanderaRandom();
       SetPuntos(puntos - 1);
+      SetMostrarAyuda(false)
 
       document.getElementById("resultado").textContent = `¡Incorrecto, perdiste un punto!`;
     }
@@ -70,11 +79,13 @@ function App() {
     SetNombre(e.target.value);
   };
 
-  /* const obtenerAyuda = () => {
-    {paisRandom && (
-    document.getElementById("ayuda").textContent = "-".repeat(paisRandom.name.length)
-    )}
-  } */
+  const obtenerAyuda = () => {
+    if (paisRandom) {
+      SetMostrarAyuda(true);
+
+      
+    }
+  }
 
   return (
     <div className="container">
@@ -86,26 +97,22 @@ function App() {
 
         {paisRandom && (
           <div>
-            <img
-              src={paisRandom.flag}
-              className="bandera"
-              alt="bandera"
-            />
+            <img src={paisRandom.flag} className="bandera" alt="bandera"/>
           </div>
         )}
 
         <div id="ingresoNombre">
-          <input type="text" onChange={handleChange} placeholder="Ingresar nombre"/>
-          <button className="startButton"  onClick={cargarBanderaRandom} id="botonBandera">COMENZAR EL JUEGO</button>
+          <input type="text" onChange={handleChange} placeholder="Ingresar nombre" />
+          <button className="startButton" onClick={cargarBanderaRandom} id="botonBandera">COMENZAR EL JUEGO</button>
         </div>
 
         <div id="form" style={{ display: "none" }}>
           <form onSubmit={(e) => chequearRespuesta(e)}>
             <input type="text" name="respuesta"></input>
             <button type="submit">Chequear respuesta</button>
-            <div id="guionesAyuda"></div>
+            <button type="button" onClick={() => obtenerAyuda()}>Obtener ayuda</button>
+            <h1 id="guionesAyuda" style={{ display: mostrarAyuda ? "block" : "none" }}>{paisRandom && "- ".repeat(paisRandom.name.length)}</h1>
           </form>
-          {/* <button type="button" name="ayuda" onClick={obtenerAyuda()}>Obtener ayuda</button> */}
         </div>
 
         <h2 id="resultado"></h2>

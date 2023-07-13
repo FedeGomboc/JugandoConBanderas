@@ -60,10 +60,10 @@ function App() {
 
     if (respuesta.toLowerCase() === paisRandom.name.toLowerCase()) {
       cargarBanderaRandom();
-      SetPuntos(puntos + timeLeft);
+      SetPuntos(puntos + 10 + timeLeft);
       SetMostrarAyuda(false)
 
-      document.getElementById("resultado").textContent = `¡Correcto, ganaste ${timeLeft} puntos por terminar antes de tiempo!`;
+      document.getElementById("resultado").textContent = `¡Correcto, ganaste 10 puntos y otros ${timeLeft} extra por terminar antes de tiempo!`;
     } else {
       cargarBanderaRandom();
       SetPuntos(puntos - 1);
@@ -88,7 +88,7 @@ function App() {
   }
 
   return (
-    <div className="container">
+    <div className="font-link">
       <center>
         <h1>ADIVINA LA BANDERA</h1>
 

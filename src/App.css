@@ -96,3 +96,7 @@ input {
     transform: rotate(360deg);
   }
 }
+
+.font-link {
+  font-family: 'Bebas Neue';
+}
